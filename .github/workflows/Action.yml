@@ -1,5 +1,3 @@
-# This is a basic workflow to help you get started with Actions
-
 name: CI
 
 # Controls when the action will run. 
@@ -26,11 +24,15 @@ jobs:
       - uses: actions/checkout@v2
 
       # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: 获取最新代码
+        uses: actions/checkout@master
+        with:
+            ref: master
 
       # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: 初始化环境
+        env:
+          DEBIAN_FRONTEND: noninteractive
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          pwd
+          /bin/bash ./scripts/01_init_env.sh
