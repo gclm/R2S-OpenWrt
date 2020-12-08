@@ -1,3 +1,5 @@
+#!/bin/bash
+
 echo -e '\nsrc-git lienol https://github.com/xiaorouji/openwrt-passwall' >> feeds.conf.default
 ./scripts/feeds update lienol
 rm -rf feeds/lienol/lienol/ipt2socks

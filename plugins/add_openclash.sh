@@ -1,3 +1,5 @@
+#!/bin/bash
+
 cd ../../
 git clone -b master https://github.com/vernesong/OpenClash.git 
 mv OpenClash/luci-app-openclash friendlywrt-rk3328/friendlywrt/package

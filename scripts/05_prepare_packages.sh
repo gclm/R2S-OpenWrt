@@ -17,6 +17,7 @@ rm -rf feeds/packages/libs/libcap/ && svn co https://github.com/openwrt/packages
 rm -rf feeds/packages/lang/golang/ && svn co https://github.com/coolsnowwolf/packages/trunk/lang/golang feeds/packages/lang/golang
 sed -i '/enable-jsonc/i\\t--disable-cloud \\' feeds/packages/admin/netdata/Makefile
 
+# 加载插件
 cd package/lean/
 if [[ `pwd` == *"rk3328"* ]]; then
   rm -rf luci-app-oled/ && git clone https://github.com/NateLol/luci-app-oled
@@ -32,13 +33,12 @@ rm -rf openwrt-chinadns-ng/ && git clone https://github.com/pexcn/openwrt-chinad
 rm -rf v2ray/ && svn co https://github.com/coolsnowwolf/lede/trunk/package/lean/v2ray
 rm -rf v2ray-plugin/ && svn co https://github.com/coolsnowwolf/lede/trunk/package/lean/v2ray-plugin
 rm -rf trojan/ && svn co https://github.com/coolsnowwolf/lede/trunk/package/lean/trojan
-echo "---------------------"
-pwd
-ls -a
 
-#git apply ../../enable_autocore.diff
-#sed -i 's/@LINUX_5_4//' package/lean/luci-app-flowoffload/Makefile
-#. ../../5_mods.sh
-#mv ../../scripts/check_wan4.sh package/base-files/files/usr/bin && sed -i '/exit/i\/bin/sh /usr/bin/check_wan4.sh &' package/base-files/files/etc/rc.local
-#mv ../../scripts/autoupdate.sh package/base-files/files/root/au.sh && chmod +x package/base-files/files/root/au.sh
-#
+. ../../add_openclash.sh
+. ../../add_passwall.sh
+git apply ../../patch/enable_autocore.diff
+sed -i 's/@LINUX_5_4//' package/lean/luci-app-flowoffload/Makefile
+. ../../scripts/05_mods.sh
+mv ../../scripts/check_wan4.sh package/base-files/files/usr/bin && sed -i '/exit/i\/bin/sh /usr/bin/check_wan4.sh &' package/base-files/files/etc/rc.local
+mv ../../scripts/autoupdate.sh package/base-files/files/root/au.sh && chmod +x package/base-files/files/root/au.sh
+
