@@ -1,7 +1,21 @@
+#!/bin/bash
+echo "Start Prepare Package"
+
+cd friendlywrt
+git remote add upstream https://github.com/coolsnowwolf/openwrt && git fetch upstream
+git checkout upstream/lede-17.01 -b tmp
+git rm README.md
+git commit -m 'reset'
+git checkout master-v19.07.1
+git rebase adc1a9a3676b8d7be1b48b5aed185a94d8e42728^ --onto tmp -X theirs
+rm -f target/linux/rockchip-rk3328/patches-4.14/0001-net-thunderx-workaround-BGX-TX-Underflow-issue.patch target/linux/generic/hack-4.14/999-net-patch-linux-kernel-to-support-shortcut-fe.patch
+git checkout upstream/lede-17.01 -- feeds.conf.default && sed -i -E 's/#(src-git.+)(helloworld.+)/\1\2/' feeds.conf.default
+curl 'https://git.openwrt.org/?p=openwrt/openwrt.git;a=patch;h=22378beb581b113def1dc392ef75306a2168a163' | git apply --reject - || true
+
 ./scripts/feeds update -a && ./scripts/feeds install -a
 rm -rf feeds/packages/libs/libcap/ && svn co https://github.com/openwrt/packages/trunk/libs/libcap feeds/packages/libs/libcap
 rm -rf feeds/packages/lang/golang/ && svn co https://github.com/coolsnowwolf/packages/trunk/lang/golang feeds/packages/lang/golang
-sed -i '/enable-jsonc/i\\t--disable-cloud \\' feeds/packages/admin/netdata/Makefile 
+sed -i '/enable-jsonc/i\\t--disable-cloud \\' feeds/packages/admin/netdata/Makefile
 
 cd package/lean/
 if [[ `pwd` == *"rk3328"* ]]; then
@@ -18,17 +32,13 @@ rm -rf openwrt-chinadns-ng/ && git clone https://github.com/pexcn/openwrt-chinad
 rm -rf v2ray/ && svn co https://github.com/coolsnowwolf/lede/trunk/package/lean/v2ray
 rm -rf v2ray-plugin/ && svn co https://github.com/coolsnowwolf/lede/trunk/package/lean/v2ray-plugin
 rm -rf trojan/ && svn co https://github.com/coolsnowwolf/lede/trunk/package/lean/trojan
-cd ../../
+echo "---------------------"
+pwd
+ls -a
 
-
-#git clone https://github.com/jerrykuku/lua-maxminddb.git
-#git clone https://github.com/jerrykuku/luci-app-vssr.git
-#cd luci-app-vssr/root/etc/
-#echo 'china_ssr.txt
-#config/black.list
-#config/white.list
-#dnsmasq.oversea/oversea_list.conf
-#dnsmasq.ssr/ad.conf
-#dnsmasq.ssr/gfw_base.conf
-#dnsmasq.ssr/gfw_list.conf' | xargs rm
-#cd ../../../
+#git apply ../../enable_autocore.diff
+#sed -i 's/@LINUX_5_4//' package/lean/luci-app-flowoffload/Makefile
+#. ../../5_mods.sh
+#mv ../../scripts/check_wan4.sh package/base-files/files/usr/bin && sed -i '/exit/i\/bin/sh /usr/bin/check_wan4.sh &' package/base-files/files/etc/rc.local
+#mv ../../scripts/autoupdate.sh package/base-files/files/root/au.sh && chmod +x package/base-files/files/root/au.sh
+#

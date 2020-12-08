@@ -1,6 +1,11 @@
 name: R2S_Lean_OpenWrt
 
 on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  # 定时器
   schedule:
     - cron: 10 09 * * *
   watch:
@@ -9,36 +14,28 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     if: github.event.repository.owner.id == github.event.sender.id
 
     steps:
-      - name: 获取最新代码
-        uses: actions/checkout@master
-        with:
-          ref: master
+      - uses: actions/checkout@v2
 
-      - name: 初始化环境
+      - name: Init Environment
         env:
           DEBIAN_FRONTEND: noninteractive
-        run: |
-        cp -r ./scripts/. ./
-        pws
-        /bin/bash 01_init_env.sh
+        run: /bin/bash ./scripts/01_init_env.sh
 
       - name: Clone Source
-        run: /bin/bash 02_clone_source.sh master-v19.07.1 rk3328
+        run: /bin/bash ./scripts/02_clone_source.sh master-v19.07.1 rk3328
 
       - name: Patch Kernel
-        run: /bin/bash 03_patch_kernel_5.4.sh
+        run: /bin/bash ./scripts/03_patch_kernel_5.4.sh
 
-      - name: Mods
+      - name: Config Seed
+        run: /bin/bash ./scripts/04_config_seed.sh
+
+      - name: Prepare Package
         run: |
-          cd friendlywrt-rk3328
-          . ../remove_unused_config.sh
-          cat configs/config_rk3328 | grep "TARGET" >> ../base_rk3328.seed
-          cat ../app_config.seed >> ../base_rk3328.seed
-          cat ../base_rk3328.seed > configs/config_rk3328
           cd friendlywrt
           git remote add upstream https://github.com/coolsnowwolf/openwrt && git fetch upstream
           git checkout upstream/lede-17.01 -b tmp
@@ -49,12 +46,7 @@ jobs:
           rm -f target/linux/rockchip-rk3328/patches-4.14/0001-net-thunderx-workaround-BGX-TX-Underflow-issue.patch target/linux/generic/hack-4.14/999-net-patch-linux-kernel-to-support-shortcut-fe.patch
           git checkout upstream/lede-17.01 -- feeds.conf.default && sed -i -E 's/#(src-git.+)(helloworld.+)/\1\2/' feeds.conf.default
           curl 'https://git.openwrt.org/?p=openwrt/openwrt.git;a=patch;h=22378beb581b113def1dc392ef75306a2168a163' | git apply --reject - || true
-          . ../../3_prepare_packages.sh
-          git apply ../../enable_autocore.diff
-          sed -i 's/@LINUX_5_4//' package/lean/luci-app-flowoffload/Makefile
-          . ../../5_mods.sh
-          mv ../../scripts/check_wan4.sh package/base-files/files/usr/bin && sed -i '/exit/i\/bin/sh /usr/bin/check_wan4.sh &' package/base-files/files/etc/rc.local
-          mv ../../scripts/autoupdate.sh package/base-files/files/root/au.sh && chmod +x package/base-files/files/root/au.sh
+
 
       - name: Build FriendlyWrt
         run: . 4_build_image.sh friendlywrt-rk3328 nanopi_r2s.mk
@@ -63,14 +55,14 @@ jobs:
         id: assemble_artifact
         run: |
           . x_assemble_artifact.sh
-          release_tag="R2S-Lean-$(date +%Y-%m-%d)"
+          release_tag="R2S-Lean-Gclm-$(date +%Y-%m-%d)"
           echo "##[set-output name=release_tag;]$release_tag"
 
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.sec_token }}
+          GITHUB_TOKEN: ${{ secrets.workflow_token }}
         with:
           tag_name: ${{ steps.assemble_artifact.outputs.release_tag }}
           release_name: 自动发布 ${{ steps.assemble_artifact.outputs.release_tag }}

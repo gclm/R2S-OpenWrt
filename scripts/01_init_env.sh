@@ -1,4 +1,7 @@
 #!/bin/bash
+
+echo "Start Init Environment"
+
 # 删除 docker 镜像
 docker rmi `docker images -q`
 

@@ -1,29 +1,38 @@
 name: CI
 
-# Controls when the action will run. 
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
   push:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-
-  # Allows you to run this workflow manually from the Actions tab
+  # 定时器
+#  schedule:
+#    - cron: 10 09 * * *
+  watch:
+    types: started
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    if: github.event.repository.owner.id == github.event.sender.id
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: 初始化环境
+      - name: Init Environment
         env:
           DEBIAN_FRONTEND: noninteractive
-        run: |
-          pwd
-          /bin/bash ./scripts/01_init_env.sh
+        run: /bin/bash ./scripts/01_init_env.sh
+
+      - name: Clone Source
+        run: /bin/bash ./scripts/02_clone_source.sh master-v19.07.1 rk3328
+
+      - name: Patch Kernel
+        run: /bin/bash ./scripts/03_patch_kernel_5.4.sh
+
+      - name: Config Seed
+        run: /bin/bash ./scripts/04_config_seed.sh
+
+      - name: Prepare Package
+        run: /bin/bash ./05_prepare_packages.sh

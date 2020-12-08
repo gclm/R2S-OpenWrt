@@ -1,3 +1,7 @@
+#!/bin/bash
+
+echo "Start Patch Kernel"
+
 cd friendlywrt-rk3328
 cd kernel/
 git apply ../../add_fullconenat.diff
