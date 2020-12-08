@@ -1,0 +1,26 @@
+name: R2S_OpenWrt_Test
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - '.github/workflows/Action_Test.yml'
+  schedule:
+    - cron: '0 2 * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: github.repository == 'gclm/R2S-OpenWrt'
+    steps:
+      - name: 获取最新代码
+        uses: actions/checkout@master
+        with:
+          ref: master
+
+      - name: 初始化环境
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+        pwd
+        /bin/bash ./scripts/01_init_env.sh
