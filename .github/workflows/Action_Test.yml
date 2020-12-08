@@ -1,26 +1,25 @@
-name: R2S_OpenWrt_Test
+name: R2S-OpenWrt-Without-Docker
 
 on:
-  push:
-    branches: [ master ]
-    paths:
-      - '.github/workflows/Action_Test.yml'
   schedule:
-    - cron: '0 2 * * *'
+    - cron: 5 9 * * *
+  watch:
+    types: started
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    if: github.repository == 'gclm/R2S-OpenWrt'
-    steps:
-      - name: 获取最新代码
-        uses: actions/checkout@master
-        with:
-          ref: master
+    runs-on: ubuntu-18.04
+    if: github.event.repository.owner.id == github.event.sender.id
 
-      - name: 初始化环境
-        env:
-          DEBIAN_FRONTEND: noninteractive
-        run: |
-        pwd
-        /bin/bash ./scripts/01_init_env.sh
+    steps:
+    - name: 获取最新代码
+      uses: actions/checkout@master
+      with:
+        ref: master
+
+    - name: 初始化环境
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+      pwd
+      /bin/bash ./scripts/01_init_env.sh
