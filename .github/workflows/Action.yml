@@ -35,4 +35,4 @@ jobs:
         run: /bin/bash ./scripts/04_config_seed.sh
 
       - name: Prepare Package
-        run: /bin/bash ./05_prepare_packages.sh
+        run: /bin/bash ./scripts/05_prepare_packages.sh
