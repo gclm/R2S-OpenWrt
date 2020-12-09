@@ -13,8 +13,9 @@ cd friendlywrt-rk3328
 sed -i -r 's/# (CONFIG_.*_ERRATUM_.*?) is.*/\1=y/g' kernel/arch/arm64/configs/*
 echo "\nCONFIG_ZRAM=m\n" >> kernel/arch/arm64/configs/sunxi_arm64_defconfig
 
-echo "xxxxxxxxxxxxxx"
+echo "-------------------------------------"
 pwd
+ls
 cat configs/config_rk3328 | grep "TARGET" >> ../base_rk3328.seed
-cat ../app_config.seed >> ../base_rk3328.seed
+cat ../patch/app_config.seed >> ../base_rk3328.seed
 cat ../base_rk3328.seed > configs/config_rk3328

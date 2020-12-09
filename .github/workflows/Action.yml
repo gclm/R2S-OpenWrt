@@ -33,19 +33,3 @@ jobs:
 
       - name: Config Seed
         run: /bin/bash ./scripts/04_config_seed.sh
-
-      - name: Prepare Package
-        run: /bin/bash ./scripts/05_prepare_packages.sh
-
-      - name: Build Plugins
-        run: |
-          echo "xxxxxxx"
-          pwd
-          ls
-          /bin/bash ./plugins/add_openclash.sh
-          /bin/bash ./plugins/add_passwall.sh
-          git apply ./patch/enable_autocore.diff
-          sed -i 's/@LINUX_5_4//' package/lean/luci-app-flowoffload/Makefile
-
-      - name: Config Mods
-        run: /bin/bash ./scripts/06_config_mods.sh
