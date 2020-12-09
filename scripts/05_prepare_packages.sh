@@ -35,5 +35,6 @@ rm -rf v2ray-plugin/ && svn co https://github.com/coolsnowwolf/lede/trunk/packag
 rm -rf trojan/ && svn co https://github.com/coolsnowwolf/lede/trunk/package/lean/trojan
 
 echo "---------------------------------开始添加插件-----------------------"
+cd ../../
 pwd
 ls
