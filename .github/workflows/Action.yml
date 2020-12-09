@@ -41,6 +41,7 @@ jobs:
         run: |
           echo "xxxxxxx"
           pwd
+          ls
           /bin/bash ./plugins/add_openclash.sh
           /bin/bash ./plugins/add_passwall.sh
           git apply ./patch/enable_autocore.diff
