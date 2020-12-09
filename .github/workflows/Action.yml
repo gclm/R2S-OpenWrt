@@ -14,23 +14,26 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     if: github.event.repository.owner.id == github.event.sender.id
 
     steps:
-      - uses: actions/checkout@v2
+    - name: Clone Repository
+      uses: actions/checkout@v2
 
-      - name: Init Environment
-        env:
-          DEBIAN_FRONTEND: noninteractive
-        run: /bin/bash ./scripts/01_init_env.sh
+    - name: Init Environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: /bin/bash ./scripts/01_init_env.sh
 
-      - name: Clone Source
-        run: /bin/bash ./scripts/02_clone_source.sh master-v19.07.1 rk3328
+    - name: Clone Source
+      run: /bin/bash ./scripts/02_clone_source.sh master-v19.07.1 rk3328
 
-      - name: Patch Kernel
-        run: /bin/bash ./scripts/03_patch_kernel_5.4.sh
+    - name: Patch Kernel
+      run: /bin/bash ./scripts/03_patch_kernel_5.4.sh
 
-      - name: Config Seed
-        run: /bin/bash ./scripts/04_config_seed.sh
+    - name: Config Seed
+      run: /bin/bash ./scripts/04_config_seed.sh
 
+    - name: Prepare Package
+      run: /bin/bash ./scripts/05_prepare_packages.sh

@@ -1,5 +1,4 @@
 #!/bin/bash
-
 echo "Start Clone Source"
 
 rm -rf friendlywrt-$2 && mkdir -p friendlywrt-$2
