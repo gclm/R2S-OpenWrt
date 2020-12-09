@@ -37,3 +37,10 @@ jobs:
 
     - name: Prepare Package
       run: /bin/bash ./scripts/05_prepare_packages.sh
+
+    - name: Config Plugins
+      run: |
+        echo "---------------------------------开始添加插件-----------------------"
+        cd ../../
+        pwd
+        ls
