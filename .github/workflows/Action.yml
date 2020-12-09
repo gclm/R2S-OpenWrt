@@ -41,6 +41,10 @@ jobs:
     - name: Config Plugins
       run: |
         echo "---------------------------------开始添加插件-----------------------"
-        cd ../../
         pwd
         ls
+        echo "---------------------------------"
+        /bin/bash ./plugins/add_openclash.sh
+        /bin/bash ./plugins/add_passwall.sh
+        git apply ./patch/enable_autocore.diff
+        sed -i 's/@LINUX_5_4//' package/lean/luci-app-flowoffload/Makefile
