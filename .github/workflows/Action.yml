@@ -33,3 +33,4 @@ jobs:
 
       - name: Config Seed
         run: /bin/bash ./scripts/04_config_seed.sh
+

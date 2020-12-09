@@ -19,3 +19,4 @@ ls
 cat configs/config_rk3328 | grep "TARGET" >> ../base_rk3328.seed
 cat ../patch/app_config.seed >> ../base_rk3328.seed
 cat ../base_rk3328.seed > configs/config_rk3328
+
